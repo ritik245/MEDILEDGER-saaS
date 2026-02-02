@@ -3,6 +3,7 @@ import cors from "cors";
 import "dotenv/config";
 
 import userRouter from "./routes/userRoute";
+import recordRouter from "../src/routes/record.routes";
 
 const app = express();
 
@@ -15,6 +16,7 @@ app.get("/", (_req, res) => {
 
 
 app.use("/user", userRouter);
+app.use("/records",recordRouter);
 
 const PORT = 5000;
 

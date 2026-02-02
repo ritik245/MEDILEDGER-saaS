@@ -7,17 +7,25 @@ const key=crypto
 .digest();
 
 //encrypt file
-export function encryptFile(input:string,output:string){
-    const iv=crypto.randomBytes(16);
+export function encryptFile(input: string, output: string): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const iv = crypto.randomBytes(16);
 
-    const cipher=crypto.createCipheriv("aes-256-cbc",key,iv);
+    const cipher = crypto.createCipheriv("aes-256-cbc", key, iv);
 
-    const inputStream=fs.createReadStream(input);
-    const outputStream=fs.createWriteStream(output);
+    const inputStream = fs.createReadStream(input);
+    const outputStream = fs.createWriteStream(output);
 
     outputStream.write(iv);
-    inputStream.pipe(cipher).pipe(outputStream);
+
+    inputStream
+      .pipe(cipher)
+      .pipe(outputStream)
+      .on("finish", resolve)
+      .on("error", reject);
+  });
 }
+
 
 //Sha256 hash
 export function hashFile(path: string): Promise<string> {
