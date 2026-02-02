@@ -30,3 +30,17 @@ export function hashFile(path: string): Promise<string> {
       .on("error", reject);
   });
 }
+
+export function decryptFile(input: string, output: string) {
+  const iv = Buffer.alloc(16);
+
+  const fd = fs.openSync(input, "r");
+  fs.readSync(fd, iv, 0, 16, 0);
+  fs.closeSync(fd);
+
+  const decipher = crypto.createDecipheriv("aes-256-cbc", key, iv);
+
+  fs.createReadStream(input, { start: 16 })
+    .pipe(decipher)
+    .pipe(fs.createWriteStream(output));
+}
