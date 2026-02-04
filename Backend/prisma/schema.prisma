@@ -25,6 +25,7 @@ model User {
 
 model Record {
   id        Int      @id @default(autoincrement())
+  filename  String?
   cid       String
   hash      String
   patientId Int

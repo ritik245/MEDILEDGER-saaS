@@ -1,44 +1,66 @@
-import  fs from "fs";
+import crypto from "crypto";
 import { prisma } from "../lib/prisma";
-import { encryptFile,hashFile,decryptFile } from "../utils/encryption";
+import { uploadToIPFS, downloadFromIPFS } from "./ipfs.service";
+import { encryptBuffer, decryptBuffer } from "../utils/encryption";
 
-export async function uploadRecord(filePath:string,patientId:number){
-    const encryptedPath=filePath+".enc";
 
-    //encrypt
-    await encryptFile(filePath,encryptedPath);
-    //hash
-    const hash= await hashFile(encryptedPath);
 
-    //delete the original
-    fs.unlinkSync(filePath);
-    //savve in db
-    const record=await prisma.record.create({
-        data:{
-            cid:encryptedPath,
-            hash,
-            patientId,
-        },
-    });
-    return record;
+export async function uploadRecord(
+  fileBuffer: Buffer,
+  filename: string,
+  patientId: number
+) {
+
+  const encryptedBuffer = encryptBuffer(fileBuffer);
+
+
+  const cid = await uploadToIPFS(encryptedBuffer);
+
+
+  const hash = crypto
+    .createHash("sha256")
+    .update(encryptedBuffer)
+    .digest("hex");
+
+  const record = await prisma.record.create({
+    data: {
+      filename,
+      cid,
+      hash,
+      patientId
+    }
+  });
+
+  return record;
 }
 
-//downlaoding funcn
+export async function downloadRecord(
+  recordId: number,
+  userId: number
+) {
+  const record = await prisma.record.findUnique({
+    where: { id: recordId }
+  });
 
-export async function downloadRecord(recordId:number,userId:number){
-    const record= await prisma.record.findUnique({
-        where:{id:recordId},
-    });
+  if (!record) {
+    throw new Error("Record not found");
+  }
 
-    if(!record){
-        throw new Error("Record not found");
+  const encryptedBuffer = await downloadFromIPFS(record.cid);
 
-    }
+  const newHash = crypto
+    .createHash("sha256")
+    .update(encryptedBuffer)
+    .digest("hex");
 
-    /*const decryptedPath=record.cid+".dec"*/
-    const decryptedPath = record.cid.replace(".enc", "");
-    
-    await decryptFile(record.cid,decryptedPath);
+  if (newHash !== record.hash) {
+    throw new Error("File tampered");
+  }
 
-    return decryptedPath;
+  const decrypted = decryptBuffer(encryptedBuffer);
+
+  return {
+    buffer: decrypted,
+    filename: record.filename
+  };
 }

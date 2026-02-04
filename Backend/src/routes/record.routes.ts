@@ -1,10 +1,14 @@
 import { Router, Request, Response } from "express";
 import { requireAuth, requireRole } from "../../middleware/AuthMiddleware";
 import { upload } from "../../config/multer";
-import { uploadRecord,downloadRecord } from "../services/record.service";
+import { uploadRecord, downloadRecord } from "../services/record.service";
 
 const recordRouter = Router();
 
+
+// =======================
+// Upload (IPFS version)
+// =======================
 recordRouter.post(
   "/upload",
   requireAuth,
@@ -16,8 +20,10 @@ recordRouter.post(
         return res.status(400).json({ message: "No file uploaded" });
       }
 
+      // ✅ use buffer instead of path
       const record = await uploadRecord(
-        req.file.path,
+        req.file.buffer,
+        req.file.originalname,
         (req as any).user.userId
       );
 
@@ -25,28 +31,36 @@ recordRouter.post(
         message: "Uploaded successfully",
         record,
       });
+
     } catch (e: any) {
-      res.status(500).json({
-        error: e.message,
-      });
+      res.status(500).json({ error: e.message });
     }
   }
 );
 
-//download route
+
+// =======================
+// Download (IPFS version)
+// =======================
 recordRouter.get("/:id", requireAuth, async (req, res) => {
   try {
-    const path = await downloadRecord(
+
+    // ✅ get buffer + filename
+    const { buffer, filename } = await downloadRecord(
       Number(req.params.id),
       (req as any).user.userId
     );
 
-    return res.download(path);   // ⭐ THIS IS CRITICAL
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename="${filename || "file"}"`
+    );
+
+    res.send(buffer);
+
   } catch (e: any) {
-    return res.status(400).json({ error: e.message });
+    res.status(400).json({ error: e.message });
   }
 });
-
-
 
 export default recordRouter;
