@@ -1,6 +1,6 @@
 # MediLedger Frontend
 
-Modern React + Vite dashboard for the MediLedger backend.
+Modern **React + TypeScript + Vite** dashboard for the MediLedger backend.
 
 ## Run locally
 
