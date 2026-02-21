@@ -1,0 +1,111 @@
+:root {
+  color-scheme: dark;
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(18, 227, 255, 0.2), transparent 35%),
+    radial-gradient(circle at 85% 0%, rgba(109, 89, 255, 0.25), transparent 40%),
+    #060b17;
+  color: #e6ecff;
+}
+
+.app-shell {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+h1 {
+  margin: 0;
+  letter-spacing: 0.02em;
+}
+
+p { margin: 0.5rem 0 0; color: #9db0ff; }
+
+.badge {
+  border: 1px solid #3a4d9b;
+  padding: 0.6rem 1rem;
+  border-radius: 999px;
+  background: rgba(31, 47, 92, 0.35);
+}
+
+.grid {
+  margin-top: 1.5rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1rem;
+}
+
+.panel {
+  border: 1px solid #233465;
+  border-radius: 18px;
+  padding: 1.2rem;
+  background: rgba(14, 24, 52, 0.75);
+  backdrop-filter: blur(6px);
+}
+
+.panel-title-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.8rem;
+  align-items: center;
+}
+
+h2 { margin-top: 0; }
+
+.stack { display: flex; flex-direction: column; gap: 0.8rem; }
+.stack.compact { margin-top: 1rem; }
+
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.92rem;
+  color: #b4c0ef;
+}
+
+input, select, button {
+  border-radius: 10px;
+  border: 1px solid #2e4288;
+  background: #0b1533;
+  color: #edf2ff;
+  padding: 0.7rem 0.8rem;
+}
+
+button { cursor: pointer; font-weight: 600; }
+button:disabled { opacity: 0.45; cursor: not-allowed; }
+
+.primary {
+  background: linear-gradient(95deg, #13d2ff, #4c7dff 60%, #6a4bff);
+  border: none;
+}
+
+.ghost { background: transparent; }
+.danger {
+  margin-top: 1rem;
+  width: 100%;
+  border-color: #91405f;
+  background: #291020;
+}
+
+.status {
+  margin-top: 1rem;
+  border: 1px solid #29437f;
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  color: #9dd4ff;
+  background: rgba(16, 32, 71, 0.65);
+}
