@@ -1,32 +1,55 @@
-# MediLedger Frontend
+# MediLedger Frontend (Production-ready scaffold)
 
-Modern **React + TypeScript + Vite** dashboard for the MediLedger backend.
+A scalable React 18 + TypeScript frontend for blockchain healthcare records.
 
-## Run locally
+## Stack
+- React 18 + TypeScript + Vite
+- Tailwind CSS
+- React Router v6
+- Axios + JWT interceptor
+- React Query
+- Zustand
+- Framer Motion
 
+## Routes
+- `/login`, `/signup`
+- `/dashboard`, `/dashboard/patient`, `/dashboard/doctor`, `/dashboard/admin`
+- `/records`, `/upload`, `/permissions`, `/profile`
+
+## Architecture
+```
+src/
+  components/
+  layouts/
+  pages/
+  services/
+  hooks/
+  store/
+  types/
+  utils/
+  routes/
+```
+
+## Run
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
 
-Optional environment variable:
+API base URL defaults to `http://localhost:5000` and can be overridden with `VITE_API_BASE_URL` in `.env`.
 
+
+## Troubleshooting: "same file" / pull issues on Windows
+If `git pull` fails with messages about `App.tsx` and `app.tsx` being the same file, it's due to **case-insensitive filesystems** (common on Windows/macOS defaults).
+
+This repo now uses only `src/App.tsx` (single canonical file), but old local git metadata can still cache the prior lowercase alias.
+
+Run:
 ```bash
-VITE_API_BASE_URL=http://localhost:5000
+git rm --cached frontend/src/app.tsx 2>nul || true
+git fetch --all
+git reset --hard origin/main
 ```
 
-## Features
-
-- Sign up / sign in against `/user` auth APIs
-- JWT session stored in localStorage
-- Upload medical records to `/records/upload`
-- Download records by ID from `/records/:id`
-
-
-## File map
-
-- `src/main.tsx` (entrypoint)
-- `src/app.tsx` (lowercase app wrapper)
-- `src/App.tsx` (main dashboard component)
-- `src/api.ts` (typed API client)
+If needed, re-clone after deleting the old local copy.
