@@ -1,6 +1,6 @@
 # MediLedger Frontend
 
-Modern React + Vite dashboard for the MediLedger backend.
+Modern **React + TypeScript + Vite** dashboard for the MediLedger backend.
 
 ## Run locally
 
@@ -22,3 +22,11 @@ VITE_API_BASE_URL=http://localhost:5000
 - JWT session stored in localStorage
 - Upload medical records to `/records/upload`
 - Download records by ID from `/records/:id`
+
+
+## File map
+
+- `src/main.tsx` (entrypoint)
+- `src/app.tsx` (lowercase app wrapper)
+- `src/App.tsx` (main dashboard component)
+- `src/api.ts` (typed API client)
